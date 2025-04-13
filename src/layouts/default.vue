@@ -27,6 +27,19 @@ export default {
             />
           </template>
         </v-list-item>
+        <v-list-item
+          rounded="xl"
+          class="font-weight-medium"
+          title="产品管理"
+          to="/product-management"
+        >
+          <template #prepend>
+            <v-icon
+              class="pl-7"
+              icon="mdi-content-paste"
+            />
+          </template>
+        </v-list-item>
       </v-list>
     </v-navigation-drawer>
 
