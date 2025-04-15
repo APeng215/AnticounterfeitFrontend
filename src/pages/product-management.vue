@@ -1,21 +1,76 @@
 <script>
+import FetchHelper from "@/components/FetchHelper.js";
+
 export default {
+  data() {
+    return {
+      addingProductDialog: {
+
+      },
+      isAddingProductDialogActive: false,
+      goods: [],
+      products: [],
+      fetchAlert: false,
+      tableHeaders: [
+        { title: "产品 ID", key: "id" },
+        { title: "所属商品", key: "goodsBelong" },
+        { title: "生产日期", key: "producingDate" },
+        { title: "防伪序列号", value: "acSerialNumber"},
+        { title: "防伪颜色", value: "acColors"},
+      ]
+    }
+  },
+  computed: {
+    goodsNames() {
+      return this.goods.map(goods => goods.name);
+    }
+  },
+  mounted() {
+    this.fetchGoods()
+    this.fetchProducts()
+  },
+  methods: {
+    fetchProducts() {
+      this.products = [];
+      FetchHelper.get("/products").then((res) => {
+        this.products = res;
+        this.fetchAlert = false;
+      }).catch((reason) => {
+        console.error(reason);
+        this.fetchAlert = true;
+      })
+    },
+    fetchGoods() {
+      FetchHelper.get("/goods").then((data) => {
+        this.goods = data;
+      });
+    },
+    dialogAddingButtonClicked() {
+
+    }
+  }
 }
 </script>
 
 <template>
   <v-card class="ma-16">
+    <v-alert
+      v-model="fetchAlert"
+      type="error"
+      closable
+      text="获取产品信息失败！"
+    />
     <v-data-table
-      :items="goods"
+      :items="products"
       :headers="tableHeaders"
     >
-      <template v-slot:top>
-        <v-toolbar flat>
+      <template #top>
+        <v-toolbar>
           <v-toolbar-title>
-            商品
+            产品
           </v-toolbar-title>
           <v-dialog
-            v-model="isAddingGoodsDialogActive"
+            v-model="isAddingProductDialogActive"
             max-width="500px"
           >
             <template #activator="{props}">
@@ -24,52 +79,46 @@ export default {
                 class="me-2"
                 prepend-icon="mdi-plus"
                 rounded="lg"
-                text="添加商品"
+                text="添加产品"
                 v-bind="props"
-              ></v-btn>
+              />
             </template>
             <v-card
-              prepend-icon="mdi-shopping"
-              title="添加商品"
-              subtitle="为产品添加对应的商品品牌"
+              prepend-icon="mdi-content-paste"
+              title="添加产品"
+              subtitle="为商品添加对应的产品"
             >
               <v-form>
-                <v-text-field
-                  v-model="addGoodsDialog.name"
+                <v-autocomplete
                   class="mx-8 mb-2"
-                  label="商品名称"
-                  :rules="[goodsNameRequired]"
-                />
-                <v-textarea
-                  v-model="addGoodsDialog.description"
-                  class="mx-8"
-                  label="描述"
+                  label="所属商品"
+                  :items="goodsNames"
                 />
               </v-form>
 
-              <v-divider></v-divider>
+              <v-divider />
 
               <v-card-actions>
-                <v-spacer></v-spacer>
+                <v-spacer />
 
                 <v-btn
                   text="关闭"
                   variant="plain"
-                  @click="isAddingGoodsDialogActive = false"
-                ></v-btn>
+                  @click="isAddingProductDialogActive = false"
+                />
 
                 <v-btn
                   color="primary"
                   text="添加"
                   variant="tonal"
-                  @click="addGoodsButtonClicked"
-                ></v-btn>
+                  @click="dialogAddingButtonClicked"
+                />
               </v-card-actions>
             </v-card>
           </v-dialog>
         </v-toolbar>
       </template>
-      <template v-slot:item.actions="{ index, item }">
+      <template #item.actions="{ index, item }">
         <div class="d-flex ga-2 justify-end">
           <v-dialog
             v-model="isEditingGoodsDialogActive"
@@ -103,23 +152,23 @@ export default {
                 />
               </v-form>
 
-              <v-divider></v-divider>
+              <v-divider />
 
               <v-card-actions>
-                <v-spacer></v-spacer>
+                <v-spacer />
 
                 <v-btn
                   text="关闭"
                   variant="plain"
                   @click="isEditingGoodsDialogActive = false"
-                ></v-btn>
+                />
 
                 <v-btn
                   color="primary"
                   text="修改"
                   variant="tonal"
                   @click="editGoodsButtonClicked(item.name)"
-                ></v-btn>
+                />
               </v-card-actions>
             </v-card>
           </v-dialog>

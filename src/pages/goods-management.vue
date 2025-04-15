@@ -3,6 +3,7 @@ import FetchHelper from "@/components/FetchHelper.js";
 export default {
   data() {
     return {
+      fetchAlert: false,
       goods: [],
       isAddingGoodsDialogActive: false,
       isEditingGoodsDialogActive: false,
@@ -38,6 +39,10 @@ export default {
     fetchGoods() {
       FetchHelper.get("/goods").then((data) => {
         this.goods = data;
+        this.fetchAlert = false;
+      }).catch(reason => {
+        console.error(reason);
+        this.fetchAlert = true;
       });
     },
     goodsNameRequired (goodsName) {
@@ -72,12 +77,18 @@ export default {
 
 <template>
   <v-card class="ma-16">
+    <v-alert
+      v-model="fetchAlert"
+      type="error"
+      closable
+      text="获取商品信息失败！"
+    />
     <v-data-table
       :items="goods"
       :headers="tableHeaders"
     >
       <template v-slot:top>
-        <v-toolbar flat>
+        <v-toolbar>
           <v-toolbar-title>
             商品
           </v-toolbar-title>
