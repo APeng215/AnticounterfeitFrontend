@@ -5,7 +5,9 @@ export default {
   data() {
     return {
       addingProductDialog: {
-
+        goodsName: "",
+        produceNum: 1,
+        produceDate: null,
       },
       isAddingProductDialogActive: false,
       goods: [],
@@ -13,10 +15,10 @@ export default {
       fetchAlert: false,
       tableHeaders: [
         { title: "产品 ID", key: "id" },
-        { title: "所属商品", key: "goodsBelong" },
-        { title: "生产日期", key: "producingDate" },
-        { title: "防伪序列号", value: "acSerialNumber"},
-        { title: "防伪颜色", value: "acColors"},
+        { title: "所属商品", key: "goods.name" },
+        { title: "生产日期", key: "produceDate" },
+        { title: "防伪序列号", value: "uuid"},
+        { title: "防伪颜色", value: ""},
       ]
     }
   },
@@ -46,7 +48,9 @@ export default {
       });
     },
     dialogAddingButtonClicked() {
-
+      FetchHelper.post("/products", this.addingProductDialog).then((product) => {
+        console.debug(product);
+      });
     }
   }
 }
@@ -90,9 +94,26 @@ export default {
             >
               <v-form>
                 <v-autocomplete
+                  v-model="addingProductDialog.goodsName"
                   class="mx-8 mb-2"
                   label="所属商品"
                   :items="goodsNames"
+                  :rules="[v => !!v || '所属商品不能为空']"
+                  required
+                />
+                <v-number-input
+                  label="生产数量"
+                  v-model="addingProductDialog.produceNum"
+                  class="mx-8 mb-2"
+                  :min="1"
+                  required
+                />
+                <v-date-input
+                  class="mx-8 mb-2"
+                  label="生产日期"
+                  prepend-icon=""
+                  prepend-inner-icon="$calendar"
+                  v-model="addingProductDialog.produceDate"
                 />
               </v-form>
 
@@ -117,67 +138,6 @@ export default {
             </v-card>
           </v-dialog>
         </v-toolbar>
-      </template>
-      <template #item.actions="{ index, item }">
-        <div class="d-flex ga-2 justify-end">
-          <v-dialog
-            v-model="isEditingGoodsDialogActive"
-            max-width="500px"
-          >
-            <template #activator="{props}">
-              <v-icon
-                color="medium-emphasis"
-                icon="mdi-pencil"
-                v-bind="props"
-                @click="openEditGoodsDialog(item.description)"
-              />
-            </template>
-            <v-card
-              prepend-icon="mdi-shopping"
-              title="修改商品"
-              subtitle="修改商品信息"
-            >
-              <v-form>
-                <v-text-field
-                  v-model="item.name"
-                  class="mx-8 mb-2"
-                  label="商品名称"
-                  :rules="[goodsNameRequired]"
-                  readonly
-                />
-                <v-textarea
-                  v-model="editGoodsDialog.description"
-                  class="mx-8"
-                  label="描述"
-                />
-              </v-form>
-
-              <v-divider />
-
-              <v-card-actions>
-                <v-spacer />
-
-                <v-btn
-                  text="关闭"
-                  variant="plain"
-                  @click="isEditingGoodsDialogActive = false"
-                />
-
-                <v-btn
-                  color="primary"
-                  text="修改"
-                  variant="tonal"
-                  @click="editGoodsButtonClicked(item.name)"
-                />
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-          <v-icon
-            color="medium-emphasis"
-            icon="mdi-delete"
-            @click="removeGoodsButtonClicked(index)"
-          />
-        </div>
       </template>
     </v-data-table>
   </v-card>
