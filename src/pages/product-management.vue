@@ -4,6 +4,7 @@ import FetchHelper from "@/components/FetchHelper.js";
 export default {
   data() {
     return {
+      isRequesting: false,
       addingProductDialog: {
         goodsName: "",
         produceNum: 1,
@@ -55,10 +56,13 @@ export default {
         })
         return;
       }
+      this.isRequesting = true;
       FetchHelper.post("/products", this.addingProductDialog).then((product) => {
         console.debug(product);
         this.fetchProducts();
         this.isAddingProductDialogActive = false;
+      }).finally(() => {
+        this.isRequesting = false;
       });
     }
   }
@@ -100,6 +104,7 @@ export default {
               prepend-icon="mdi-content-paste"
               title="添加产品"
               subtitle="为商品添加对应的产品"
+              :loading="isRequesting"
             >
               <v-form ref="addProductForm">
                 <v-autocomplete

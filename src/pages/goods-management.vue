@@ -3,6 +3,7 @@ import FetchHelper from "@/components/FetchHelper.js";
 export default {
   data() {
     return {
+      isRequesting: false,
       fetchAlert: false,
       goods: [],
       isAddingGoodsDialogActive: false,
@@ -49,9 +50,12 @@ export default {
       return !!goodsName || '商品名称不能为空'
     },
     addGoodsButtonClicked() {
+      this.isRequesting = true;
       FetchHelper.post("/goods", this.addGoodsDialog).then(() => {
-          this.reFetchGoods()
-        })
+        this.reFetchGoods()
+        }).finally(() => {
+        this.isRequesting = false;
+      })
     },
     removeGoodsButtonClicked(index) {
       FetchHelper
@@ -110,6 +114,7 @@ export default {
               prepend-icon="mdi-shopping"
               title="添加商品"
               subtitle="为产品添加对应的商品品牌"
+              :loading="isRequesting"
             >
               <v-form>
                 <v-text-field
