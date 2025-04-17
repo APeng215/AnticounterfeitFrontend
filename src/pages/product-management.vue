@@ -47,9 +47,18 @@ export default {
         this.goods = data;
       });
     },
-    dialogAddingButtonClicked() {
+    async dialogAddingButtonClicked() {
+      const { valid, errors } = await this.$refs.addProductForm.validate();
+      if (!valid) {
+        errors.forEach(error => {
+          console.warn(error.errorMessages[0]);
+        })
+        return;
+      }
       FetchHelper.post("/products", this.addingProductDialog).then((product) => {
         console.debug(product);
+        this.fetchProducts();
+        this.isAddingProductDialogActive = false;
       });
     }
   }
@@ -92,7 +101,7 @@ export default {
               title="添加产品"
               subtitle="为商品添加对应的产品"
             >
-              <v-form>
+              <v-form ref="addProductForm">
                 <v-autocomplete
                   v-model="addingProductDialog.goodsName"
                   class="mx-8 mb-2"
@@ -107,6 +116,7 @@ export default {
                   class="mx-8 mb-2"
                   :min="1"
                   required
+                  :rules="[v => !!v || '生产数量不能为空']"
                 />
                 <v-date-input
                   class="mx-8 mb-2"
@@ -114,6 +124,8 @@ export default {
                   prepend-icon=""
                   prepend-inner-icon="$calendar"
                   v-model="addingProductDialog.produceDate"
+                  required
+                  :rules="[v => !!v || '生产日期不能为空']"
                 />
               </v-form>
 
