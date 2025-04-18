@@ -4,6 +4,7 @@ import FetchHelper from "@/components/FetchHelper.js";
 export default {
   data() {
     return {
+      isFetching: false,
       isRequesting: false,
       addingProductDialog: {
         goodsName: "",
@@ -34,6 +35,7 @@ export default {
   },
   methods: {
     fetchProducts() {
+      this.isFetching = true;
       this.products = [];
       FetchHelper.get("/products").then((res) => {
         this.products = res;
@@ -41,6 +43,8 @@ export default {
       }).catch((reason) => {
         console.error(reason);
         this.fetchAlert = true;
+      }).finally(() => {
+        this.isFetching = false;
       })
     },
     fetchGoods() {
@@ -80,6 +84,7 @@ export default {
     <v-data-table
       :items="products"
       :headers="tableHeaders"
+      :loading="isFetching"
     >
       <template #top>
         <v-toolbar>

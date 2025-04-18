@@ -3,6 +3,7 @@ import FetchHelper from "@/components/FetchHelper.js";
 export default {
   data() {
     return {
+      isFetching: false,
       isRequesting: false,
       fetchAlert: false,
       goods: [],
@@ -38,12 +39,15 @@ export default {
       this.editGoodsDialog.description = goodDescriptionEdited;
     },
     fetchGoods() {
+      this.isFetching = true;
       FetchHelper.get("/goods").then((data) => {
         this.goods = data;
         this.fetchAlert = false;
       }).catch(reason => {
         console.error(reason);
         this.fetchAlert = true;
+      }).finally(() => {
+        this.isFetching = false;
       });
     },
     goodsNameRequired (goodsName) {
@@ -90,6 +94,7 @@ export default {
     <v-data-table
       :items="goods"
       :headers="tableHeaders"
+      :loading="isFetching"
     >
       <template v-slot:top>
         <v-toolbar>
