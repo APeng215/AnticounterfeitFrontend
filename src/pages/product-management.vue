@@ -1,12 +1,26 @@
 <script>
 import FetchHelper from "@/components/FetchHelper.js";
-
+import QrcodeVue, { QrcodeCanvas, QrcodeSvg } from 'qrcode.vue'
 export default {
+  components: {
+    QrcodeVue,
+    QrcodeCanvas,
+    QrcodeSvg,
+  },
   data() {
     return {
+      selectedDates: [],
+      selectedGoods: [],
+      search: "",
+      selected: null,
+      QRCodeImageSettings: {
+        src: 'https://i.ibb.co/GfBWx2kS/icon.png',
+        width: 25,
+        height: 25,
+      },
       stageSize: {
-        width: 200,
-        height: 100
+        width: 120,
+        height: 20
       },
       rect1Config: {
         x: 20,
@@ -33,13 +47,31 @@ export default {
         { title: "所属商品", key: "goods.name" },
         { title: "生产日期", key: "produceDate" },
         { title: "防伪序列号", value: "uuid"},
-        { title: "防伪颜色", value: "acColors"},
       ]
     }
   },
   computed: {
+    productDates() {
+      return [ ...new Set(this.products.map(p => p.produceDate)) ]
+    },
     goodsNames() {
       return this.goods.map(goods => goods.name);
+    },
+    filteredProducts() {
+      return this.products.filter(p => {
+        // if selectedDates is empty, don’t filter by date
+        const matchesDate =
+          !this.selectedDates || this.selectedDates.length === 0 ||
+          this.selectedDates.includes(p.produceDate)
+
+        // if selectedGoods is empty, don’t filter by goods
+        const matchesGoods =
+          !this.selectedGoods || this.selectedGoods.length === 0 ||
+          this.selectedGoods.includes(p.goods.name)
+
+        // keep only if it passes both active filters
+        return matchesDate && matchesGoods
+      })
     }
   },
   mounted() {
@@ -95,16 +127,40 @@ export default {
       text="获取产品信息失败！"
     />
     <v-data-table
-      :items="products"
+      :search="search"
+      v-model="selected"
+      :items="filteredProducts"
       :headers="tableHeaders"
       :loading="isFetching"
       show-expand
+      show-select
+      return-object
+      select-strategy="all"
     >
       <template #top>
-        <v-toolbar>
-          <v-toolbar-title>
-            产品
-          </v-toolbar-title>
+        <v-toolbar title="产品">
+          <v-autocomplete
+            clearable
+            multiple
+            chips
+            v-model="selectedGoods"
+            label="筛选商品"
+            :items="goodsNames"
+            variant="outlined"
+            density="compact"
+            class="mt-5 me-2"
+          ></v-autocomplete>
+          <v-autocomplete
+            clearable
+            multiple
+            chips
+            v-model="selectedDates"
+            label="筛选日期"
+            :items="productDates"
+            variant="outlined"
+            density="compact"
+            class="mt-5 me-2"
+          ></v-autocomplete>
           <v-dialog
             v-model="isAddingProductDialogActive"
             max-width="500px"
@@ -175,10 +231,8 @@ export default {
           </v-dialog>
         </v-toolbar>
       </template>
-      <template v-slot:item.acColors="{ value }">
-
-      </template>
       <template v-slot:item.data-table-expand="{ internalItem, isExpanded, toggleExpand }">
+        <v-spacer />
         <v-btn
           :append-icon="isExpanded(internalItem) ? 'mdi-chevron-up' : 'mdi-chevron-down'"
           :text="isExpanded(internalItem) ? '防伪码' : '防伪码'"
@@ -191,26 +245,49 @@ export default {
           @click="toggleExpand(internalItem)"
         ></v-btn>
       </template>
-
-
       <template v-slot:expanded-row="{ columns, item }">
         <tr>
-          <td colspan="6">
-            <v-card class="d-flex justify-center">
-              <v-stage :config="stageSize">
-                <v-layer>
-                  <v-rect
-                    v-for="(item, index) in item.acColorsInHex"
-                    :config="{ x: 20 * index, y: 0, width: 20, height: 20, fill: item }"
-                  />
-                </v-layer>
-              </v-stage>
-            </v-card>
+          <td :colspan="columns.length" class="py-2">
+            <div class="d-flex justify-end">
+              <v-card
+                color="indigo"
+                variant="tonal"
+                width="160"
+                height="180"
+                class="d-flex flex-column align-center justify-center"
+                elevation="3"
+              >
+                <v-stage :config="stageSize">
+                  <v-layer>
+                    <v-rect
+                      v-for="(item, index) in item.acColorsInHex"
+                      :config="{ x: 20 * index, y: 0, width: 20, height: 20, fill: item }"
+                    />
+                  </v-layer>
+                </v-stage>
+                <qrcode-canvas
+                  value="https://example.com"
+                  size="120"
+                  level="M"
+                  :image-settings="QRCodeImageSettings"
+                  margin="1"
+                />
+                <v-stage :config="stageSize">
+                  <v-layer>
+                    <v-rect
+                      v-for="(item, index) in item.acColorsInHex"
+                      :config="{ x: 20 * index, y: 0, width: 20, height: 20, fill: item }"
+                    />
+                  </v-layer>
+                </v-stage>
+              </v-card>
+            </div>
           </td>
         </tr>
       </template>
     </v-data-table>
   </v-card>
+  <pre>{{selected}}</pre>
 </template>
 
 <style scoped>
