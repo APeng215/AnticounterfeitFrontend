@@ -287,6 +287,7 @@ export default {
       </template>
     </v-data-table>
   </v-card>
+  Selected products:
   <pre>{{selected}}</pre>
 </template>
 
