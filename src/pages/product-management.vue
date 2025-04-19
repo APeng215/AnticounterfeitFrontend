@@ -4,6 +4,19 @@ import FetchHelper from "@/components/FetchHelper.js";
 export default {
   data() {
     return {
+      stageSize: {
+        width: 200,
+        height: 100
+      },
+      rect1Config: {
+        x: 20,
+        y: 20,
+        width: 100,
+        height: 50,
+        fill: 'green',
+        stroke: 'black',
+        strokeWidth: 4
+      },
       isFetching: false,
       isRequesting: false,
       addingProductDialog: {
@@ -20,7 +33,7 @@ export default {
         { title: "所属商品", key: "goods.name" },
         { title: "生产日期", key: "produceDate" },
         { title: "防伪序列号", value: "uuid"},
-        { title: "防伪颜色", value: ""},
+        { title: "防伪颜色", value: "acColors"},
       ]
     }
   },
@@ -85,6 +98,7 @@ export default {
       :items="products"
       :headers="tableHeaders"
       :loading="isFetching"
+      show-expand
     >
       <template #top>
         <v-toolbar>
@@ -160,6 +174,40 @@ export default {
             </v-card>
           </v-dialog>
         </v-toolbar>
+      </template>
+      <template v-slot:item.acColors="{ value }">
+
+      </template>
+      <template v-slot:item.data-table-expand="{ internalItem, isExpanded, toggleExpand }">
+        <v-btn
+          :append-icon="isExpanded(internalItem) ? 'mdi-chevron-up' : 'mdi-chevron-down'"
+          :text="isExpanded(internalItem) ? '防伪码' : '防伪码'"
+          class="text-none"
+          color="medium-emphasis"
+          size="small"
+          variant="text"
+          border
+          slim
+          @click="toggleExpand(internalItem)"
+        ></v-btn>
+      </template>
+
+
+      <template v-slot:expanded-row="{ columns, item }">
+        <tr>
+          <td colspan="6">
+            <v-card class="d-flex justify-center">
+              <v-stage :config="stageSize">
+                <v-layer>
+                  <v-rect
+                    v-for="(item, index) in item.acColorsInHex"
+                    :config="{ x: 20 * index, y: 0, width: 20, height: 20, fill: item }"
+                  />
+                </v-layer>
+              </v-stage>
+            </v-card>
+          </td>
+        </tr>
       </template>
     </v-data-table>
   </v-card>

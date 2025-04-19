@@ -8,10 +8,12 @@
 import vuetify from './vuetify'
 import pinia from '@/stores'
 import router from '@/router'
+import VueKonva from 'vue-konva';
 
 export function registerPlugins (app) {
   app
     .use(vuetify)
     .use(router)
     .use(pinia)
+    .use(VueKonva)
 }
