@@ -79,6 +79,9 @@ export default {
     this.fetchProducts()
   },
   methods: {
+    exportButtonClicked(selected) {
+
+    },
     fetchProducts() {
       this.isFetching = true;
       this.products = [];
@@ -229,6 +232,15 @@ export default {
               </v-card-actions>
             </v-card>
           </v-dialog>
+          <v-btn
+            border
+            class="me-2"
+            prepend-icon="mdi-export-variant"
+            rounded="lg"
+            :text="selected == null || selected.length === 0 ? '请选择要导出的条目' : '导出防伪码'"
+            :disabled="selected == null || selected.length === 0"
+            @click="exportButtonClicked(selected)"
+          />
         </v-toolbar>
       </template>
       <template v-slot:item.data-table-expand="{ internalItem, isExpanded, toggleExpand }">
@@ -287,6 +299,40 @@ export default {
       </template>
     </v-data-table>
   </v-card>
+  <v-div class="d-flex flex-wrap justify-center">
+    <v-card
+      color="indigo"
+      variant="tonal"
+      width="160"
+      height="180"
+      class="d-flex flex-column align-center justify-center ma-1"
+      v-for="singleSelected in selected"
+    >
+      <v-stage :config="stageSize">
+        <v-layer>
+          <v-rect
+            v-for="(item, index) in singleSelected.acColorsInHex"
+            :config="{ x: 20 * index, y: 0, width: 20, height: 20, fill: item }"
+          />
+        </v-layer>
+      </v-stage>
+      <qrcode-canvas
+        value="https://example.com"
+        size="120"
+        level="M"
+        :image-settings="QRCodeImageSettings"
+        margin="1"
+      />
+      <v-stage :config="stageSize">
+        <v-layer>
+          <v-rect
+            v-for="(item, index) in singleSelected.acColorsInHex"
+            :config="{ x: 20 * index, y: 0, width: 20, height: 20, fill: item }"
+          />
+        </v-layer>
+      </v-stage>
+    </v-card>
+  </v-div>
   Selected products:
   <pre>{{selected}}</pre>
 </template>
