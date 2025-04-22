@@ -32,15 +32,16 @@ export default {
 </script>
 
 <template>
-  <v-btn @click="print" class="no-print">打印</v-btn>
-  <div class="d-flex flex-wrap justify-center" id="pdfDom">
+  <v-btn @click="print" class="no-print" size="x-large" color="success">打印</v-btn>
+  <div class="d-flex flex-wrap justify-center bg-container" id="pdfDom">
     <v-card
       color="indigo"
       variant="tonal"
       width="160"
-      height="180"
+      height="201"
       class="d-flex flex-column align-center justify-center ma-1 qrCode"
-      v-for="singleSelected in selected"
+      v-for="(singleSelected, idx)  in selected"
+      :class="{ 'page-break': (idx + 1) % 20 === 1 && idx !== 0 }"
     >
       <v-stage :config="stageSize">
         <v-layer>
@@ -81,6 +82,12 @@ meta:
   .no-print{
     display: none;
   }
+  .page-break {
+    page-break-before: always;
+  }
 }
+  .bg-container {
+    -webkit-print-color-adjust: exact;
+  }
 </style>
 
