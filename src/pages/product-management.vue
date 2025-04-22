@@ -14,7 +14,7 @@ export default {
       search: "",
       selected: null,
       QRCodeImageSettings: {
-        src: 'https://i.ibb.co/GfBWx2kS/icon.png',
+        src: '/icon.png',
         width: 25,
         height: 25,
       },
@@ -47,6 +47,7 @@ export default {
         { title: "所属商品", key: "goods.name" },
         { title: "生产日期", key: "produceDate" },
         { title: "防伪序列号", value: "uuid"},
+        { title: "", value: "actions"},
       ]
     }
   },
@@ -79,8 +80,28 @@ export default {
     this.fetchProducts()
   },
   methods: {
-    exportButtonClicked(selected) {
+    removeProduct(item) {
+      FetchHelper.delete("/products", item.id)
+        .then(() => {
+          // remove the deleted item from this.products
+          this.products = this.products.filter(p => p.id !== item.id);
+        })
+        .catch(err => {
+          console.error("Failed to delete product:", err);
+        });
+    },
+    goPrint(selected) {
+      sessionStorage.setItem(
+        'selectedProducts',
+        JSON.stringify(selected)
+      )
+      // this.$router.push({ path: '/print-qrcodes' })
+      // if you're using Vue Router, resolve the full URL
+      const url = this.$router.resolve('/print-qrcodes').href;
+      window.open(url, '_blank');
 
+      // or if it’s a simple path/external link:
+      // window.open('/details', '_blank');
     },
     fetchProducts() {
       this.isFetching = true;
@@ -122,6 +143,7 @@ export default {
 </script>
 
 <template>
+  <v-btn @click="print">打印</v-btn>
   <v-card class="ma-16">
     <v-alert
       v-model="fetchAlert"
@@ -239,7 +261,7 @@ export default {
             rounded="lg"
             :text="selected == null || selected.length === 0 ? '请选择要导出的条目' : '导出防伪码'"
             :disabled="selected == null || selected.length === 0"
-            @click="exportButtonClicked(selected)"
+            @click="goPrint(selected)"
           />
         </v-toolbar>
       </template>
@@ -297,15 +319,22 @@ export default {
           </td>
         </tr>
       </template>
+      <template v-slot:item.actions="{ index, item }">
+          <v-icon
+            color="medium-emphasis"
+            icon="mdi-delete"
+            @click="removeProduct(item)"
+          />
+      </template>
     </v-data-table>
   </v-card>
-  <v-div class="d-flex flex-wrap justify-center">
+  <div class="d-flex flex-wrap justify-center" id="pdfDom">
     <v-card
       color="indigo"
       variant="tonal"
       width="160"
       height="180"
-      class="d-flex flex-column align-center justify-center ma-1"
+      class="d-flex flex-column align-center justify-center ma-1 qrCode"
       v-for="singleSelected in selected"
     >
       <v-stage :config="stageSize">
@@ -318,10 +347,10 @@ export default {
       </v-stage>
       <qrcode-canvas
         value="https://example.com"
-        size="120"
+        :size="120"
         level="M"
         :image-settings="QRCodeImageSettings"
-        margin="1"
+        :margin="1"
       />
       <v-stage :config="stageSize">
         <v-layer>
@@ -332,7 +361,7 @@ export default {
         </v-layer>
       </v-stage>
     </v-card>
-  </v-div>
+  </div>
   Selected products:
   <pre>{{selected}}</pre>
 </template>
