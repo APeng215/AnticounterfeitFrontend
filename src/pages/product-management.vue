@@ -143,7 +143,6 @@ export default {
 </script>
 
 <template>
-  <v-btn @click="print">打印</v-btn>
   <v-card class="ma-16">
     <v-alert
       v-model="fetchAlert"
