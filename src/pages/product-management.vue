@@ -52,6 +52,9 @@ export default {
     }
   },
   computed: {
+    getFrontEndIp() {
+      return FetchHelper.frontEndIP;
+    },
     productDates() {
       return [ ...new Set(this.products.map(p => p.produceDate)) ]
     },
@@ -80,11 +83,15 @@ export default {
     this.fetchProducts()
   },
   methods: {
+    getValidationIp(productUuid, signature) {
+      return `${this.getFrontEndIp}/validation?uuid=${productUuid}&sig=${signature}`;
+    },
     removeProduct(item) {
       FetchHelper.delete("/products", item.id)
         .then(() => {
           // remove the deleted item from this.products
           this.products = this.products.filter(p => p.id !== item.id);
+          this.selected = this.selected.filter(p => p.id !== item.id);
         })
         .catch(err => {
           console.error("Failed to delete product:", err);
@@ -345,7 +352,7 @@ export default {
         </v-layer>
       </v-stage>
       <qrcode-canvas
-        value="https://example.com"
+        :value="getValidationIp(singleSelected.uuid, singleSelected.signature)"
         :size="120"
         level="M"
         :image-settings="QRCodeImageSettings"

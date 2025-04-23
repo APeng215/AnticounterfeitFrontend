@@ -1,5 +1,6 @@
 <script>
 import { QrcodeCanvas } from 'qrcode.vue'
+import FetchHelper from "@/components/FetchHelper.js";
 export default {
   components: {QrcodeCanvas},
   data() {
@@ -16,7 +17,18 @@ export default {
       },
     }
   },
+  computed: {
+    getFrontEndIp() {
+      return FetchHelper.frontEndIP;
+    },
+  },
+  mounted() {
+    this.loadItems()
+  },
   methods: {
+    getValidationIp(productUuid, signature) {
+      return `${this.getFrontEndIp}/validation?uuid=${productUuid}&sig=${signature}`;
+    },
     print() {
       window.print()
     },
@@ -24,9 +36,6 @@ export default {
       const raw = sessionStorage.getItem('selectedProducts') || '[]'
       this.selected = JSON.parse(raw);
     }
-  },
-  mounted() {
-    this.loadItems()
   }
 }
 </script>
@@ -52,7 +61,7 @@ export default {
         </v-layer>
       </v-stage>
       <qrcode-canvas
-        value="https://example.com"
+        :value="getValidationIp(singleSelected.uuid, singleSelected.signature)"
         :size="120"
         level="M"
         :image-settings="QRCodeImageSettings"
