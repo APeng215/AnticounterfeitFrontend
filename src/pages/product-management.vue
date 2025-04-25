@@ -1,6 +1,7 @@
 <script>
 import FetchHelper from "@/components/FetchHelper.js";
-import QrcodeVue, { QrcodeCanvas, QrcodeSvg } from 'qrcode.vue'
+import QrcodeVue, {QrcodeCanvas, QrcodeSvg} from 'qrcode.vue'
+
 export default {
   components: {
     QrcodeVue,
@@ -43,11 +44,11 @@ export default {
       products: [],
       fetchAlert: false,
       tableHeaders: [
-        { title: "产品 ID", key: "id" },
-        { title: "所属商品", key: "goods.name" },
-        { title: "生产日期", key: "produceDate" },
-        { title: "防伪序列号", value: "uuid"},
-        { title: "", value: "actions"},
+        {title: "产品 ID", key: "id"},
+        {title: "所属商品", key: "goods.name"},
+        {title: "生产日期", key: "produceDate"},
+        {title: "防伪序列号", value: "uuid"},
+        {title: "", value: "actions"},
       ]
     }
   },
@@ -56,7 +57,7 @@ export default {
       return FetchHelper.frontEndIP;
     },
     productDates() {
-      return [ ...new Set(this.products.map(p => p.produceDate)) ]
+      return [...new Set(this.products.map(p => p.produceDate))]
     },
     goodsNames() {
       return this.goods.map(goods => goods.name);
@@ -129,7 +130,7 @@ export default {
       });
     },
     async dialogAddingButtonClicked() {
-      const { valid, errors } = await this.$refs.addProductForm.validate();
+      const {valid, errors} = await this.$refs.addProductForm.validate();
       if (!valid) {
         errors.forEach(error => {
           console.warn(error.errorMessages[0]);
@@ -153,44 +154,44 @@ export default {
   <v-card class="ma-16">
     <v-alert
       v-model="fetchAlert"
-      type="error"
       closable
       text="获取产品信息失败！"
+      type="error"
     />
     <v-data-table
-      :search="search"
       v-model="selected"
-      :items="filteredProducts"
       :headers="tableHeaders"
+      :items="filteredProducts"
       :loading="isFetching"
-      show-expand
-      show-select
+      :search="search"
       return-object
       select-strategy="all"
+      show-expand
+      show-select
     >
       <template #top>
         <v-toolbar title="产品">
           <v-autocomplete
-            clearable
-            multiple
-            chips
             v-model="selectedGoods"
-            label="筛选商品"
             :items="goodsNames"
-            variant="outlined"
-            density="compact"
+            chips
             class="mt-5 me-2"
+            clearable
+            density="compact"
+            label="筛选商品"
+            multiple
+            variant="outlined"
           ></v-autocomplete>
           <v-autocomplete
-            clearable
-            multiple
-            chips
             v-model="selectedDates"
-            label="筛选日期"
             :items="productDates"
-            variant="outlined"
-            density="compact"
+            chips
             class="mt-5 me-2"
+            clearable
+            density="compact"
+            label="筛选日期"
+            multiple
+            variant="outlined"
           ></v-autocomplete>
           <v-dialog
             v-model="isAddingProductDialogActive"
@@ -207,43 +208,43 @@ export default {
               />
             </template>
             <v-card
-              prepend-icon="mdi-content-paste"
-              title="添加产品"
-              subtitle="为商品添加对应的产品"
               :loading="isRequesting"
+              prepend-icon="mdi-content-paste"
+              subtitle="为商品添加对应的产品"
+              title="添加产品"
             >
               <v-form ref="addProductForm">
                 <v-autocomplete
                   v-model="addingProductDialog.goodsName"
-                  class="mx-8 mb-2"
-                  label="所属商品"
                   :items="goodsNames"
                   :rules="[v => !!v || '所属商品不能为空']"
+                  class="mx-8 mb-2"
+                  label="所属商品"
                   required
                 />
                 <v-number-input
-                  label="生产数量"
                   v-model="addingProductDialog.produceNum"
-                  class="mx-8 mb-2"
                   :min="1"
-                  required
                   :rules="[v => !!v || '生产数量不能为空']"
+                  class="mx-8 mb-2"
+                  label="生产数量"
+                  required
                 />
                 <v-date-input
+                  v-model="addingProductDialog.produceDate"
+                  :rules="[v => !!v || '生产日期不能为空']"
                   class="mx-8 mb-2"
                   label="生产日期"
                   prepend-icon=""
                   prepend-inner-icon="$calendar"
-                  v-model="addingProductDialog.produceDate"
                   required
-                  :rules="[v => !!v || '生产日期不能为空']"
                 />
               </v-form>
 
-              <v-divider />
+              <v-divider/>
 
               <v-card-actions>
-                <v-spacer />
+                <v-spacer/>
 
                 <v-btn
                   text="关闭"
@@ -261,27 +262,27 @@ export default {
             </v-card>
           </v-dialog>
           <v-btn
+            :disabled="selected == null || selected.length === 0"
+            :text="selected == null || selected.length === 0 ? '请选择要导出的条目' : '导出防伪码'"
             border
             class="me-2"
             prepend-icon="mdi-export-variant"
             rounded="lg"
-            :text="selected == null || selected.length === 0 ? '请选择要导出的条目' : '导出防伪码'"
-            :disabled="selected == null || selected.length === 0"
             @click="goPrint(selected)"
           />
         </v-toolbar>
       </template>
       <template v-slot:item.data-table-expand="{ internalItem, isExpanded, toggleExpand }">
-        <v-spacer />
+        <v-spacer/>
         <v-btn
           :append-icon="isExpanded(internalItem) ? 'mdi-chevron-up' : 'mdi-chevron-down'"
           :text="isExpanded(internalItem) ? '防伪码' : '防伪码'"
+          border
           class="text-none"
           color="medium-emphasis"
           size="small"
-          variant="text"
-          border
           slim
+          variant="text"
           @click="toggleExpand(internalItem)"
         ></v-btn>
       </template>
@@ -290,12 +291,12 @@ export default {
           <td :colspan="columns.length" class="py-2">
             <div class="d-flex justify-end">
               <v-card
+                class="d-flex flex-column align-center justify-center"
                 color="indigo"
+                elevation="3"
+                height="180"
                 variant="tonal"
                 width="160"
-                height="180"
-                class="d-flex flex-column align-center justify-center"
-                elevation="3"
               >
                 <v-stage :config="stageSize">
                   <v-layer>
@@ -306,11 +307,11 @@ export default {
                   </v-layer>
                 </v-stage>
                 <qrcode-canvas
-                  value="https://example.com"
-                  size="120"
-                  level="M"
                   :image-settings="QRCodeImageSettings"
+                  level="M"
                   margin="1"
+                  size="120"
+                  value="https://example.com"
                 />
                 <v-stage :config="stageSize">
                   <v-layer>
@@ -326,22 +327,22 @@ export default {
         </tr>
       </template>
       <template v-slot:item.actions="{ index, item }">
-          <v-icon
-            color="medium-emphasis"
-            icon="mdi-delete"
-            @click="removeProduct(item)"
-          />
+        <v-icon
+          color="medium-emphasis"
+          icon="mdi-delete"
+          @click="removeProduct(item)"
+        />
       </template>
     </v-data-table>
   </v-card>
-  <div class="d-flex flex-wrap justify-center" id="pdfDom">
+  <div id="pdfDom" class="d-flex flex-wrap justify-center">
     <v-card
+      v-for="singleSelected in selected"
+      class="d-flex flex-column align-center justify-center ma-1 qrCode"
       color="indigo"
+      height="180"
       variant="tonal"
       width="160"
-      height="180"
-      class="d-flex flex-column align-center justify-center ma-1 qrCode"
-      v-for="singleSelected in selected"
     >
       <v-stage :config="stageSize">
         <v-layer>
@@ -352,11 +353,11 @@ export default {
         </v-layer>
       </v-stage>
       <qrcode-canvas
-        :value="getValidationIp(singleSelected.uuid, singleSelected.signature)"
-        :size="120"
-        level="M"
         :image-settings="QRCodeImageSettings"
         :margin="1"
+        :size="120"
+        :value="getValidationIp(singleSelected.uuid, singleSelected.signature)"
+        level="M"
       />
       <v-stage :config="stageSize">
         <v-layer>
@@ -369,9 +370,9 @@ export default {
     </v-card>
   </div>
   Selected products:
-  <pre>{{selected}}</pre>
+  <pre>{{ selected }}</pre>
+
 </template>
 
 <style scoped>
-
 </style>
