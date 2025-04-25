@@ -151,7 +151,10 @@ export default {
 </script>
 
 <template>
-  <v-card class="ma-16">
+  <v-card
+    class="ma-16"
+    elevation="5"
+  >
     <v-alert
       v-model="fetchAlert"
       closable

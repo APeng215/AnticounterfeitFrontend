@@ -8,9 +8,17 @@ export default {
 }
 </script>
 
+<style scoped>
+.bg {
+  background-image: url('/login-background.jpg');  /* path to your image */
+  background-repeat: no-repeat;         /* don’t tile */
+  background-position: center center;   /* horizontal / vertical */
+  background-size: cover;               /* scale to cover container */
+}
+</style>
 
 <template>
-  <v-app>
+  <v-app class="bg">
     <v-navigation-drawer class="elevation-2" v-model="drawer">
       <v-list nav>
         <v-list-subheader>项目选择</v-list-subheader>
