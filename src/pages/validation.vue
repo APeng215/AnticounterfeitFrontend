@@ -49,6 +49,7 @@ export default {
         <p>商品描述: {{ product.goods.description }}</p>
         <p>产品序列号: {{ product.id }}</p>
         <p>生产日期: {{ product.produceDate }}</p>
+        <p>查询次数: {{product.queryCount}}</p>
         <p>防伪码: {{ product.uuid }}</p>
         <p>防伪颜色:</p>
         <v-stage :config="stageSize">
