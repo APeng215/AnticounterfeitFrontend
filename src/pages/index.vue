@@ -1,5 +1,10 @@
 <template>
 </template>
 
-<script setup>
+<script>
+export default {
+  mounted() {
+    this.$router.replace('/goods-management')
+  }
+}
 </script>
