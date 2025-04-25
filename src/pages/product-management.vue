@@ -311,7 +311,7 @@ export default {
                   level="M"
                   margin="1"
                   size="120"
-                  value="https://example.com"
+                  :value="getValidationIp(item.uuid, item.signature)"
                 />
                 <v-stage :config="stageSize">
                   <v-layer>
@@ -371,7 +371,6 @@ export default {
   </div>
   Selected products:
   <pre>{{ selected }}</pre>
-
 </template>
 
 <style scoped>
