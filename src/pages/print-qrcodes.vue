@@ -41,7 +41,9 @@ export default {
 </script>
 
 <template>
-  <v-btn @click="print" class="no-print" size="x-large" color="success">打印</v-btn>
+  <div class="d-flex justify-center no-print">
+    <v-btn @click="print" class="no-print my-4" min-width="500" max-width="500" size="x-large" color="success" rounded="lg" elevation="2">打印</v-btn>
+  </div>
   <div class="d-flex flex-wrap justify-center bg-container" id="pdfDom">
     <v-card
       color="indigo"
