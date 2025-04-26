@@ -70,7 +70,7 @@ export default {
 
 <route lang="yaml">
 meta:
-  layout: empty
+  layout: background
 </route>
 
 <style scoped>
