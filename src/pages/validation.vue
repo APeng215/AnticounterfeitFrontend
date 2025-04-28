@@ -4,6 +4,7 @@ import FetchHelper from "@/components/FetchHelper.js";
 export default {
   data() {
     return {
+      loading: false,
       uuid: null,
       signature: null,
       stageSize: {
@@ -11,6 +12,7 @@ export default {
         height: 20
       },
       product: {
+        isCounterfeit: null,
         uuid: null,
         goods: {
           name: null,
@@ -26,8 +28,10 @@ export default {
   mounted() {
     this.uuid = this.$route.query.uuid;
     this.signature = this.$route.query.sig;
+    this.loading = true;
     FetchHelper.post("/products/validate", {uuid: this.uuid, signature: this.signature})
-      .then(product => this.product = product)
+      .then(product => {this.product = product})
+      .finally(() => {this.loading = false});
   }
 }
 </script>
@@ -38,11 +42,13 @@ export default {
     style="height: 100vh;"
   >
     <v-card
-      prepend-icon="mdi-magnify-expand"
+      :prepend-icon="product.isCounterfeit ? 'mdi-close-box-outline' : 'mdi-checkbox-marked-circle-outline'"
       title="产品防伪查询结果"
-      subtitle=""
-      color="success"
+      :subtitle="product.isCounterfeit ? '您的商品存在假冒风险！' : '您的商品为正品！'"
+      :color="product.isCounterfeit ? 'error' : 'success'"
       elevation="5"
+      :loading="loading"
+      min-width="347.81"
     >
       <v-card-text class="bg-surface-light pt-4">
         <p>商品: {{ product.goods.name }}</p>
