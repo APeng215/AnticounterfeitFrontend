@@ -1,6 +1,6 @@
 export default class FetchHelper {
-  static backEndIP = "http://localhost:8081";
-  static frontEndIP = "http://localhost:3000"
+  static backEndIP = "http://192.168.1.103:8081";
+  static frontEndIP = "http://192.168.1.103:3000"
 
   static async get(relevantPath) {
     try {
