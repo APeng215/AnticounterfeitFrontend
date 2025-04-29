@@ -31,7 +31,7 @@ export default {
           <template #prepend>
             <v-icon
               class="pl-7"
-              icon="mdi-shopping"
+              icon="mdi-shopping-outline"
             />
           </template>
         </v-list-item>
@@ -48,12 +48,30 @@ export default {
             />
           </template>
         </v-list-item>
+        <v-list-item
+          rounded="xl"
+          class="font-weight-medium"
+          title="热点地图"
+          to="/map"
+        >
+          <template #prepend>
+            <v-icon
+              class="pl-7"
+              icon="mdi-map-search-outline"
+            />
+          </template>
+        </v-list-item>
       </v-list>
     </v-navigation-drawer>
 
     <v-app-bar color="primary">
       <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
-      <v-app-bar-title>商品防伪系统</v-app-bar-title>
+      <v-img
+        :max-width="30"
+        :max-height="30"
+        src="/icon.png"
+      ></v-img>
+      <v-app-bar-title style="margin-left: 5px">商品防伪系统</v-app-bar-title>
     </v-app-bar>
 
     <v-main>
