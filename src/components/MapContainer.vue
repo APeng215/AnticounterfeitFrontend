@@ -24,14 +24,17 @@ export default {
           center: [115, 37], // 初始化地图中心点位置
         });
         this.products.forEach(product => {
-          const lat = product.queries.location.lat
-          const lng = product.queries.location.lng
-          const city = product.queries.location.city
-          const marker = new AMap.Marker({
-            position: new AMap.LngLat(lng, lat), //经纬度对象，也可以是经纬度构成的一维数组[116.39, 39.9]
-            title: city,
+          product.queries.forEach(query => {
+            const location = query.location;
+            const lat = location.lat;
+            const lng = location.lng;
+            const city = location.city;
+            const marker = new AMap.Marker({
+              position: new AMap.LngLat(lng, lat), //经纬度对象，也可以是经纬度构成的一维数组[116.39, 39.9]
+              title: city,
+            })
+            this.map.add(marker);
           });
-          this.map.add(marker);
         });
       })
       .catch((e) => {
