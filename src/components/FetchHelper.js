@@ -7,7 +7,9 @@ export default class FetchHelper {
       relevantPath = this.#formatRelevantPath(relevantPath);
       const url = this.backEndIP + relevantPath;
 
-      const res = await fetch(url);
+      const res = await fetch(url, {
+        credentials: 'include'
+      });
       if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
 
       return await res.json();
@@ -28,6 +30,7 @@ export default class FetchHelper {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(data),
+        credentials: 'include'
       });
 
       if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
@@ -53,6 +56,7 @@ export default class FetchHelper {
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include'
       });
 
       if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
@@ -76,6 +80,7 @@ export default class FetchHelper {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(data),
+        credentials: 'include'
       });
 
       if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
@@ -85,6 +90,20 @@ export default class FetchHelper {
       console.error('PUT request failed:', error);
       throw error;
     }
+  }
+
+  static async basicAuth(username, password) {
+    const endpoint = `${this.backEndIP}/login`; // Ensure backEndIP is defined appropriately
+    const credentials = btoa(`${username}:${password}`);
+    return fetch(endpoint, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Basic ${credentials}`,
+        'Content-Type': 'application/json'
+      },
+      credentials: 'include', // Include cookies and HTTP authentication information
+      redirect: 'error'          // ← 遇到 3xx 自动抛错
+    });
   }
 
   static #formatRelevantPath(relevantPath) {
