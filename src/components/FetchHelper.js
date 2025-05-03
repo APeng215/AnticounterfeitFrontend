@@ -92,17 +92,36 @@ export default class FetchHelper {
     }
   }
 
-  static async basicAuth(username, password) {
-    const endpoint = `${this.backEndIP}/login`; // Ensure backEndIP is defined appropriately
-    const credentials = btoa(`${username}:${password}`);
-    return fetch(endpoint, {
+  static async formLogin(username, password) {
+    try {
+      const response = await fetch(FetchHelper.backEndIP + '/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          // form data here, e.g.:
+          username: username,
+          password: password,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Login failed');
+      }
+      // Handle successful login (store token, set user state, etc.)
+      // Then navigate to main page
+      this.$router.push('/'); // or whatever your main route is
+    } catch (error) {
+      console.error(error);
+      // optionally show error message
+    }
+  }
+
+  static async logout() {
+    return fetch(this.backEndIP + "/logout", {
       method: 'POST',
-      headers: {
-        'Authorization': `Basic ${credentials}`,
-        'Content-Type': 'application/json'
-      },
-      credentials: 'include', // Include cookies and HTTP authentication information
-      redirect: 'error'          // ← 遇到 3xx 自动抛错
+      credentials: 'include'
     });
   }
 

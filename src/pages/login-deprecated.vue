@@ -44,8 +44,7 @@ export default {
       <v-form
         class="ma-4"
         fast-fail
-        :action="FetchHelper.backEndIP + '/login'"
-        method="post"
+        @submit.prevent="FetchHelper.formLogin(username, password)"
       >
         <v-text-field
           v-model="username"

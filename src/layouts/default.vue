@@ -1,10 +1,17 @@
 <script>
+import FetchHelper from "@/components/FetchHelper.js";
+
 export default {
   data() {
     return {
       drawer: true,
     }
   },
+  methods: {
+    logout() {
+      FetchHelper.logout();
+    }
+  }
 }
 </script>
 
@@ -72,6 +79,11 @@ export default {
         src="/icon.png"
       ></v-img>
       <v-app-bar-title style="margin-left: 5px">商品防伪系统</v-app-bar-title>
+      <v-btn @click="logout">
+        退出登录
+        <v-icon icon="mdi-logout-variant" class="" size="large" hover></v-icon>
+
+      </v-btn>
     </v-app-bar>
 
     <v-main>
