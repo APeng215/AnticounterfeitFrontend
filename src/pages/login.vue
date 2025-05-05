@@ -1,7 +1,10 @@
 <script>
-import FetchHelper from "@/components/FetchHelper.js";
+import LoginHelper from "@/components/LoginHelper.js";
 
 export default {
+  mounted() {
+    this.tryAutoLogin();
+  },
   data() {
     return {
       username: "",
@@ -9,11 +12,23 @@ export default {
     }
   },
   computed: {
-    FetchHelper() {
-      return FetchHelper
-    },
     isSubmitActive() {
       return !this.username || !this.password;
+    }
+  },
+  methods: {
+    tryAutoLogin() {
+      if (LoginHelper.isLoggedIn()) {
+        this.$router.push("/goods-management");
+      }
+    },
+    login() {
+      if (this.username === "root" && this.password === "123456") {
+        LoginHelper.setLoggedIn(true);
+        this.$router.push("/goods-management")
+      } else {
+        alert("账号或密码错误")
+      }
     }
   }
 }
@@ -44,7 +59,7 @@ export default {
       <v-form
         class="ma-4"
         fast-fail
-        @submit.prevent="FetchHelper.formLogin(username, password)"
+        @submit.prevent="login"
       >
         <v-text-field
           v-model="username"

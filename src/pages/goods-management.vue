@@ -1,5 +1,6 @@
 <script>
 import FetchHelper from "@/components/FetchHelper.js";
+import LoginHelper from "@/components/LoginHelper.js";
 export default {
   data() {
     return {
@@ -24,6 +25,9 @@ export default {
     }
   },
   mounted() {
+    if (!LoginHelper.isLoggedIn()) {
+      this.$router.replace("/login")
+    }
     this.fetchGoods();
   },
   methods: {

@@ -1,5 +1,5 @@
 <script>
-import FetchHelper from "@/components/FetchHelper.js";
+import LoginHelper from "@/components/LoginHelper.js";
 
 export default {
   data() {
@@ -9,7 +9,8 @@ export default {
   },
   methods: {
     logout() {
-      FetchHelper.logout();
+      LoginHelper.setLoggedIn(false);
+      this.$router.replace('/login')
     }
   }
 }

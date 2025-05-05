@@ -1,6 +1,7 @@
 <script>
 import FetchHelper from "@/components/FetchHelper.js";
 import QrcodeVue, {QrcodeCanvas, QrcodeSvg} from 'qrcode.vue'
+import LoginHelper from "@/components/LoginHelper.js";
 
 export default {
   components: {
@@ -80,6 +81,9 @@ export default {
     }
   },
   mounted() {
+    if (!LoginHelper.isLoggedIn()) {
+      this.$router.replace("/login")
+    }
     this.fetchGoods()
     this.fetchProducts()
   },
