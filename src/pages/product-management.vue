@@ -14,7 +14,7 @@ export default {
       selectedDates: [],
       selectedGoods: [],
       search: "",
-      selected: null,
+      selected: [],
       QRCodeImageSettings: {
         src: '/icon.png',
         width: 25,
@@ -101,6 +101,15 @@ export default {
         .catch(err => {
           console.error("Failed to delete product:", err);
         });
+    },
+    removeProducts(ids) {
+      FetchHelper.deleteAll("/products", ids)
+        .then(() => {
+          this.selected = this.selected.filter(element => !ids.includes(element.id));
+          this.fetchProducts();
+        }).catch(() => {
+          alert("批量删除商品失败！")
+      })
     },
     goPrint(selected) {
       sessionStorage.setItem(
@@ -269,8 +278,18 @@ export default {
             </v-card>
           </v-dialog>
           <v-btn
-            :disabled="selected == null || selected.length === 0"
-            :text="selected == null || selected.length === 0 ? '请选择要导出的条目' : '导出防伪码'"
+            :disabled="selected.length === 0"
+            :text="selected.length === 0 ? '请选择要删除的条目' : '删除选中产品'"
+            border
+            color="error"
+            class="me-2"
+            prepend-icon="mdi-delete-outline"
+            rounded="lg"
+            @click="removeProducts(selected.map(product => product.id))"
+          />
+          <v-btn
+            :disabled="selected.length === 0"
+            :text="selected.length === 0 ? '请选择要导出的条目' : '导出防伪码'"
             border
             class="me-2"
             prepend-icon="mdi-export-variant"
@@ -335,8 +354,8 @@ export default {
       </template>
       <template v-slot:item.actions="{ index, item }">
         <v-icon
-          color="medium-emphasis"
-          icon="mdi-delete"
+          color="error"
+          icon="mdi-delete-outline"
           @click="removeProduct(item)"
         />
       </template>
