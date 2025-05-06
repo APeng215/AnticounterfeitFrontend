@@ -172,8 +172,8 @@ export default {
           >
             <template #activator="{props}">
               <v-icon
-                color="medium-emphasis"
-                icon="mdi-pencil"
+                color="warning"
+                icon="mdi-pencil-outline"
                 v-bind="props"
                 @click="openEditGoodsDialog(item.description)"
               />
@@ -219,8 +219,8 @@ export default {
             </v-card>
           </v-dialog>
           <v-icon
-            color="medium-emphasis"
-            icon="mdi-delete"
+            color="error"
+            icon="mdi-delete-outline"
             @click="removeGoodsButtonClicked(index)"
           />
         </div>
