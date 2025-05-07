@@ -72,6 +72,7 @@ export default {
           v-model="password"
           label="密码"
           name="password"
+          type="password"
           required
         ></v-text-field>
         <div class="d-flex justify-center">
