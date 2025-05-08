@@ -23,7 +23,7 @@ export default {
       }
     },
     login() {
-      if (this.username === "root" && this.password === "123456") {
+      if (this.username === "root" && this.password === "ab115118") {
         LoginHelper.setLoggedIn(true);
         this.$router.push("/goods-management")
       } else {
