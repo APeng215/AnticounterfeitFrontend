@@ -28,7 +28,7 @@ export default {
     AMapLoader.load({
       key: "e44abcd5049f9bbfda3ebcc148e81d52", // 申请好的Web端开发者Key，首次调用 load 时必填
       version: "2.0", // 指定要加载的 JSAPI 的版本，缺省时默认为 1.4.15
-      plugins: ["AMap.Scale", "AMap.MarkerCluster"], //需要使用的的插件列表，如比例尺'AMap.Scale'，支持添加多个如：['...','...']
+      plugins: ["AMap.Scale", "AMap.MarkerCluster", "AMap.ToolBar", "AMap.HawkEye", "AMap.ControlBar"], //需要使用的的插件列表，如比例尺'AMap.Scale'，支持添加多个如：['...','...']
     }).then((AMap) => {
       this.map = new AMap.Map("container", {
         // 设置地图容器id
@@ -36,7 +36,11 @@ export default {
         zoom: 4.8, // 初始化地图级别
         center: [115, 37], // 初始化地图中心点位置
       });
-      new AMap.MarkerCluster(
+      this.map.addControl(new AMap.Scale());
+      this.map.addControl(new AMap.ToolBar({ position: "LT" }));
+      this.map.addControl(new AMap.HawkEye());
+      this.map.addControl(new AMap.ControlBar({ position: "RT" }));
+      this.cluster = new AMap.MarkerCluster(
         this.map, //地图实例
         points, //海量点数据，数据中需包含经纬度信息字段 lnglat
       );
@@ -44,7 +48,8 @@ export default {
   },
   data() {
     return {
-      map: null
+      map: null,
+      cluster: null,
     }
   },
 }
