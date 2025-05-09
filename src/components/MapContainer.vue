@@ -12,7 +12,15 @@ export default {
     window._AMapSecurityConfig = {
       securityJsCode: "19340afc2cfe6eeec465c29a103f3056",
     };
-    const points = this.products.map(product => product.queries).flat().map(query => ({lnglat: [query.location.lng, query.location.lat]}))
+    const points = this.products
+      .flatMap(product => product.queries)                // flatten in one go
+      .filter(q =>                                      // only keep when both exist
+        q.location?.lng != null &&
+        q.location?.lat != null
+      )
+      .map(q => ({
+        lnglat: [q.location.lng, q.location.lat]
+      }));
     for (let i = 0; i < 10; i++) {
       points.push({lnglat: [116, 40]})
     }
