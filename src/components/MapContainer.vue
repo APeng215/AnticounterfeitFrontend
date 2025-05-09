@@ -12,10 +12,6 @@ export default {
     window._AMapSecurityConfig = {
       securityJsCode: "19340afc2cfe6eeec465c29a103f3056",
     };
-    // for (let i = 0; i < 10; i++) {
-    //   this.scanPoints.push({lnglat: [116, 40]})
-    // }
-    console.log(this.scanPoints)
     AMapLoader.load({
       key: "e44abcd5049f9bbfda3ebcc148e81d52", // 申请好的Web端开发者Key，首次调用 load 时必填
       version: "2.0", // 指定要加载的 JSAPI 的版本，缺省时默认为 1.4.15
