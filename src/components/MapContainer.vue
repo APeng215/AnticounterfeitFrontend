@@ -90,9 +90,9 @@ export default {
     <!-- Add a class and position it absolutely -->
     <v-card
       class="info-card d-flex flex-column align-center"
-      elevation="1"
+      elevation="2"
     >
-      <h3>地点显示</h3>
+      <div class="text-h6">地点显示</div>
       <v-btn-toggle
         v-model="selectedInfoType"
         mandatory

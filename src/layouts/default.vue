@@ -33,6 +33,19 @@ export default {
         <v-list-item
           rounded="xl"
           class="font-weight-medium"
+          title="主页"
+          to="/home"
+        >
+          <template #prepend>
+            <v-icon
+              class="pl-7"
+              icon="mdi-home-outline"
+            />
+          </template>
+        </v-list-item>
+        <v-list-item
+          rounded="xl"
+          class="font-weight-medium"
           title="商品管理"
           to="/goods-management"
         >
