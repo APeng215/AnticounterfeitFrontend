@@ -1,5 +1,6 @@
 <script>
 import FetchHelper from "@/components/FetchHelper.js";
+import LoginHelper from "@/components/LoginHelper.js";
 const gradients = [
   ['#222'],
   ['#42b3f4'],
@@ -28,6 +29,9 @@ export default {
     }
   },
   mounted() {
+    if (!LoginHelper.isLoggedIn()) {
+      this.$router.push("/login")
+    }
     FetchHelper.get("/products/stats").then(stats => {
       this.productionStats = stats.annualProductions;
     })

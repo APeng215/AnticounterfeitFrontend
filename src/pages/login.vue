@@ -19,13 +19,13 @@ export default {
   methods: {
     tryAutoLogin() {
       if (LoginHelper.isLoggedIn()) {
-        this.$router.push("/goods-management");
+        this.$router.push("/home");
       }
     },
     login() {
       if (this.username === "root" && this.password === "ab115118") {
         LoginHelper.setLoggedIn(true);
-        this.$router.push("/goods-management")
+        this.$router.push("/home")
       } else {
         alert("账号或密码错误")
       }
