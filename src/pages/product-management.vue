@@ -395,8 +395,6 @@ export default {
       </v-stage>
     </v-card>
   </div>
-  Selected products:
-  <pre>{{ selected }}</pre>
 </template>
 
 <style scoped>

@@ -69,9 +69,6 @@ export default {
       </v-card-text>
     </v-card>
   </div>
-  <div>
-    <pre>{{ product }}</pre>
-  </div>
 </template>
 
 <route lang="yaml">
