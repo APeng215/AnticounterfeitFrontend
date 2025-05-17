@@ -44,8 +44,19 @@ export default {
     }
   },
   computed: {
+    goods() {
+      const result = this.products.map(product => product.goods.name);
+      result.push("全部");
+      return new Set(result);
+    },
+    selectedProducts() {
+      if (this.selectedGoods === "全部") {
+        return this.products;
+      }
+      return this.products.filter(product => product.goods.name === this.selectedGoods)
+    },
     scanPoints() {
-      const result = this.products
+      const result = this.selectedProducts
         .flatMap(product => product.queries)                // flatten in one go
         .filter(q =>                                      // only keep when both exist
           q.location?.lng != null &&
@@ -60,7 +71,7 @@ export default {
       return result;
     },
     counterfeitPoints() {
-      return this.products
+      return this.selectedProducts
         .filter(product => product.isCounterfeit)
         .flatMap(product => product.queries)                // flatten in one go
         .filter(q =>                                      // only keep when both exist
@@ -77,6 +88,7 @@ export default {
       map: null,
       cluster: null,
       selectedInfoType: "扫码地点",
+      selectedGoods: "全部",
     }
   },
 }
@@ -105,7 +117,21 @@ export default {
           假冒地点
         </v-btn>
       </v-btn-toggle>
+      <v-autocomplete
+        v-model="selectedGoods"
+        messages="选择想要显示的商品种类"
+        class="w-100 mb-0"
+        label="商品选择"
+        :items="goods"
+      ></v-autocomplete>
     </v-card>
+    <!-- Add a class and position it absolutely -->
+    <v-card
+      class="info-card d-flex flex-column align-center"
+      elevation="2"
+    >
+    </v-card>
+
   </div>
 </template>
 

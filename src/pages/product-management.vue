@@ -395,6 +395,7 @@ export default {
       </v-stage>
     </v-card>
   </div>
+  <pre> {{selected}} </pre>
 </template>
 
 <style scoped>
