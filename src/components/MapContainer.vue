@@ -34,11 +34,19 @@ export default {
     });
   },
   watch: {
-    selectedInfoType(newInfoType) {
+    selectedGoods() {
+      this.updatePoints();
+    },
+    selectedInfoType() {
+      this.updatePoints();
+    }
+  },
+  methods: {
+    updatePoints() {
       this.cluster.setData([]);
-      if (newInfoType === "扫码地点") {
+      if (this.selectedInfoType === "扫码地点") {
         this.cluster.setData(this.scanPoints)
-      } else if (newInfoType === "假冒地点") {
+      } else if (this.selectedInfoType === "假冒地点") {
         this.cluster.setData(this.counterfeitPoints)
       }
     }
