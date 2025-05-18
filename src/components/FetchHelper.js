@@ -42,6 +42,29 @@ export default class FetchHelper {
     }
   }
 
+  static async postStringInBody(relevantPath, string) {
+    try {
+      relevantPath = this.#formatRelevantPath(relevantPath);
+      const url = this.backEndIP + relevantPath;
+
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: string,
+        credentials: 'include'
+      });
+
+      if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
+
+      return await res.json();
+    } catch (error) {
+      console.error('Fetch error:', error);
+      throw error;
+    }
+  }
+
   static async deleteAll(relevantPath, ids) {
     try {
       if (!relevantPath || !ids) {
@@ -80,6 +103,33 @@ export default class FetchHelper {
       const url = `${this.backEndIP}${relevantPath}/${itemKey}`;
 
       const res = await fetch(url, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include'
+      });
+
+      if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
+
+      // Handle empty responses gracefully
+      return await res.json().catch(() => ({}));
+    } catch (error) {
+      console.error('DELETE request failed:', error);
+      throw error;
+    }
+  }
+
+  static async deleteViaBody(relevantPath, body) {
+    try {
+      if (!relevantPath || !body) {
+        throw new Error("Both `relevantPath` and `itemKey` must be provided.");
+      }
+
+      const url = `${this.backEndIP}${relevantPath}`;
+
+      const res = await fetch(url, {
+        body: body,
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',

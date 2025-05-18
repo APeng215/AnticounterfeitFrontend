@@ -82,6 +82,19 @@ export default {
             />
           </template>
         </v-list-item>
+        <v-list-item
+          rounded="xl"
+          class="font-weight-medium"
+          title="设置"
+          to="/settings"
+        >
+          <template #prepend>
+            <v-icon
+              class="pl-7"
+              icon="mdi-cog-outline"
+            />
+          </template>
+        </v-list-item>
       </v-list>
     </v-navigation-drawer>
 
