@@ -4,6 +4,7 @@ import FetchHelper from "@/components/FetchHelper.js";
 export default {
   data() {
     return {
+      error: false,
       loading: false,
       uuid: null,
       signature: null,
@@ -31,21 +32,32 @@ export default {
     this.loading = true;
     FetchHelper.post("/products/validate", {uuid: this.uuid, signature: this.signature})
       .then(product => {this.product = product})
+      .catch(err => {this.error = true})
       .finally(() => {this.loading = false});
+  },
+  computed: {
+    cardColor() {
+      if (this.loading) {
+        return null;
+      }
+      return this.product.isCounterfeit ? 'error' : 'success'
+    }
   }
 }
 </script>
 
 <template>
   <div
-    class="d-flex justify-center align-center"
+    class="d-flex flex-column justify-center align-center"
     style="height: 100vh;"
   >
+    <v-alert max-height="80" color="error" v-if="error" text="查询失败，您的商品可能为假冒！"></v-alert>
     <v-card
+      v-if="!error"
       :prepend-icon="product.isCounterfeit ? 'mdi-close-box-outline' : 'mdi-checkbox-marked-circle-outline'"
       title="产品防伪查询结果"
       :subtitle="product.isCounterfeit ? '您的商品存在假冒风险！' : '您的商品为正品！'"
-      :color="product.isCounterfeit ? 'error' : 'success'"
+      :color="cardColor"
       elevation="5"
       :loading="loading"
       min-width="347.81"
