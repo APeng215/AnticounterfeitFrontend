@@ -51,7 +51,7 @@ export default {
     class="d-flex flex-column justify-center align-center"
     style="height: 100vh;"
   >
-    <v-alert max-height="80" color="error" v-if="error" text="查询失败，您的商品可能为假冒！"></v-alert>
+    <v-alert elevation="4" max-height="80" color="error" v-if="error" text="查询失败，您的商品可能为假冒！"></v-alert>
     <v-card
       v-if="!error"
       :prepend-icon="product.isCounterfeit ? 'mdi-close-box-outline' : 'mdi-checkbox-marked-circle-outline'"

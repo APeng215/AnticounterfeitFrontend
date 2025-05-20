@@ -43,6 +43,27 @@
       </v-card>
     </v-dialog>
   </v-card>
+  <v-card
+    class="pa-4 ma-4"
+    elevation="4"
+  >
+    <!-- 顶部标题和添加按钮 -->
+    <div class="d-flex justify-space-between align-center mb-4">
+      <h2>查询冷却</h2>
+      {{numInput}}
+    </div>
+
+    <!-- 颜色列表 -->
+    <div class="d-flex justify-center">
+      <v-number-input
+        :min="0"
+        v-model="numInput"
+        max-width="500"
+      ></v-number-input>
+      <v-btn class="ms-2 mt-2" color="success" @click="submitCdMod">提交修改</v-btn>
+      <v-btn class="ms-2 mt-2" color="primary" @click="restoreCd">还原</v-btn>
+    </div>
+  </v-card>
 </template>
 
 <script>
@@ -52,12 +73,32 @@ import FetchHelper from "@/components/FetchHelper.js";
 export default {
   data() {
     return {
+      numInput: null,
+      coolDownInMinutes: null,
       dialog: false,
       colors: [],
       hexColor: '#000000', // 初始颜色（不含 alpha）
     };
   },
   methods: {
+    submitCdMod() {
+      FetchHelper.putConfig("/config/cd", this.numInput).then(() => {
+        this.refreshCdInMinutes();
+      }).catch((reason) => {
+        console.error(reason);
+      })
+    },
+    restoreCd() {
+      this.numInput = this.coolDownInMinutes;
+    },
+    refreshCdInMinutes() {
+      FetchHelper.get("/config/cd").then(res => {
+        this.coolDownInMinutes = res;
+        this.numInput = this.coolDownInMinutes;
+      }).catch((reason) => {
+        console.error(reason);
+      })
+    },
     refreshColors() {
       FetchHelper.get("/colors")
         .then((res) => {
@@ -102,6 +143,7 @@ export default {
       this.$router.replace("/login");
     }
     this.refreshColors();
+    this.refreshCdInMinutes();
   },
 };
 </script>

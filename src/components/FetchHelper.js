@@ -170,6 +170,29 @@ export default class FetchHelper {
     }
   }
 
+  static async putConfig(relevantPath, config) {
+    try {
+      relevantPath = this.#formatRelevantPath(relevantPath);
+      const url = this.backEndIP + relevantPath;
+
+      const res = await fetch(url, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(config),
+        credentials: 'include'
+      });
+
+      if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
+
+      return await res;
+    } catch (error) {
+      console.error('PUT request failed:', error);
+      throw error;
+    }
+  }
+
   static async formLogin(username, password) {
     try {
       const response = await fetch(FetchHelper.backEndIP + '/login', {
