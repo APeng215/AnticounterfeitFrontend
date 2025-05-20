@@ -50,7 +50,6 @@
     <!-- 顶部标题和添加按钮 -->
     <div class="d-flex justify-space-between align-center mb-4">
       <h2>查询冷却</h2>
-      {{numInput}}
     </div>
 
     <!-- 颜色列表 -->
