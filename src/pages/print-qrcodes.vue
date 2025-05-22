@@ -23,6 +23,9 @@ export default {
     },
   },
   mounted() {
+    // Hide Ai agent
+    const el = document.getElementById('embed-lite');
+    if (el) el.style.display = 'none';
     this.loadItems()
   },
   methods: {
